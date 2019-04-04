@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+import pyperclip
+
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from textwrap import dedent
+import sys
+
+DESCRIPTION=dedent('''
+Manage the clipboard:
+    — If stdin is a tty, spit clipboard contents to stdout.
+    — If stdin is not a tty, read contents of stdin to clipboard.
+
+Examples:
+    — The command `{0} < text_file.txt` copies the contents of
+      text_file.txt to the clipboard.
+    — The command `{0} >> file.txt` appends the clipboard contents
+      to file.txt.
+'''.format(sys.argv[0]))
+EPILOG='''This program is free software licensed under terms of the MIT license.'''
+
+def create_parser():
+    parser = ArgumentParser(description=DESCRIPTION, epilog=EPILOG,
+                            formatter_class=RawDescriptionHelpFormatter)
+    parser.add_argument('-V', '--version', action='version', version='%(prog)s 0.1.0')
+    return parser
+
+def clip():
+    if not sys.stdin.isatty():
+        contents = sys.stdin.buffer.read().decode('utf-8')
+        pyperclip.copy(contents)
+    else:
+        contents = pyperclip.paste()
+        sys.stdout.write(contents)
+
+def main():
+    parser = create_parser()
+    parser.parse_args()
+    clip()
+
+if __name__ == '__main__':
+    main()
