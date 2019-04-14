@@ -28,9 +28,9 @@ def clip():
     if not sys.stdin.isatty():
         contents = sys.stdin.buffer.read().decode('utf-8')
         pyperclip.copy(contents)
-    else:
-        contents = pyperclip.paste()
-        sys.stdout.write(contents)
+
+    contents = pyperclip.paste()
+    sys.stdout.write(contents)
 
 def main():
     parser = create_parser()
